@@ -1,15 +1,19 @@
-
 /**
  * Module dependencies
  */
 var dotenv = require('dotenv');
 dotenv.load();
 
+var MINUTE_IN_MILLIS = 60 * 1000;
+
 var express = require('express'),
   routes = require('./routes'),
   api = require('./routes/api'),
   http = require('http'),
-  path = require('path');
+  path = require('path'),
+  exec = require('child_process').exec;
+
+
 
 var app = module.exports = express();
 
@@ -71,6 +75,10 @@ app.get('/api/searchSimple', function(req, res) {
 
 app.get('/api/unfinished', function(req, res) {
   api.unfinished(req, res);
+});
+
+app.post('/api/transition/:key', function(req, res) {
+  api.transition(req, res);
 });
 
 app.get('/api/allIssuesPerWeek/:weekNumber', function(req, res) {

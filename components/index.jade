@@ -52,6 +52,7 @@ block body
           div(ui-view="searchPanel", style="height:100%;", ng-controller='IndexCtrl')
 
   script(src='jquery/dist/jquery.js')
+  script(src='jquery-ui/jquery-ui.js')
   script(src='angular/angular.js')
   script(src='angular-resource/angular-resource.min.js')
   script(src='angular-cookies/angular-cookies.min.js')
@@ -71,6 +72,7 @@ block body
   script(src='angular-filter/dist/angular-filter.min.js')
   script(src='angular-moment/angular-moment.js')
   script(src='angular-fullscreen/src/angular-fullscreen.js')
+  script(src='angular-ui-sortable/sortable.js')
 
   script(src='js/xml2json.js')
 
@@ -81,9 +83,9 @@ block body
   script(src='index/directive/widget.js')
 
   script(src='js/app.js')
-  script(src='index/directive/feed.js')
   script(src='agileboard/directive/agileboard.js')
   script(src='issue/directive/issue.js')
+  script(src='index/directive/fallback-src.js')
   script(src='js/services.js')
   script(src='js/filters.js')
   script(src='js/directives.js')

@@ -2,11 +2,10 @@ rd-loading(ng-show='loading')
 .row(ng-hide='loading', style="margin-bottom: -20px;")
   .col-md-4(ng-repeat='column in config.agileColumns')
     .table-responsive
-      table.table.table-striped.table-bordered.table-hover
+      table.table.table-bordered
         thead
           tr
-            th {{issues.length}} {{column.name}}
-          tbody
-            tr(ng-repeat="jira in issues = (jiras.issues | statusIn:column.statuses | orderBy:'fields.updated':true)")
-              td
-                issue(jira="jira")
+            th {{jiras[column.name].length}} {{column.name}}
+    ul.list.jira-container(ui-sortable="sortableOptions", ng-model="jiras[column.name]")
+      li.jira(ng-repeat="jira in jiras[column.name]")
+        issue(jira="jira")

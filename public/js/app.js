@@ -17,6 +17,7 @@ var angularModules = angular.module('myApp', [
   'angular.filter',
   'angularMoment',
   'FBAngular',
+  'ui.sortable',
 ]);
 
 var jiraHostName = 'https://resourceful.atlassian.net';
@@ -38,15 +39,18 @@ angularModules.value('config', {
   agileColumns: [
     {
       name: 'TODO',
-      statuses: ['Open', 'Reopened', 'Awaiting Assignment', 'Inactive']
+      statuses: ['Open', 'Reopened', 'Awaiting Assignment', 'Inactive'],
+      defaultTransition: 301,
     },
     {
       name: 'In Progress',
-      statuses: ['In Progress']
+      statuses: ['In Progress'],
+      defaultTransition: 4,
     },
     {
       name: 'Done',
-      statuses: ['Closed', 'Resolved']
+      statuses: ['Closed', 'Resolved'],
+      defaultTransition: 2,
     }
   ],
 });
@@ -85,4 +89,19 @@ angularModules.config(function ($stateProvider, $urlRouterProvider, $locationPro
 
 angularModules.run(function(amMoment) {
     amMoment.changeLocale('en');
+});
+
+angularModules.config(function ($stateProvider, $urlRouterProvider, routes) {
+
+  $urlRouterProvider.otherwise('/' + routes[0].url);
+
+  angular.forEach(routes, function(route){
+    $stateProvider
+      .state(route.name, {
+        url: '/' + route.url + '?play',
+        views: {
+          "searchPanel": {templateUrl: "partials/index/" + route.url}
+        }
+      })
+  });
 });

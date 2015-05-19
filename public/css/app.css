@@ -137,3 +137,34 @@ ul.sidebar .sidebar-list a.active {
 .center {
   text-align: center;
 }
+
+.list {
+  list-style: none outside none;
+  margin: 0px 0 30px;
+}
+
+.jira-container {
+  border: 2px dashed #F0F0F0;
+  padding: 5px;
+  min-height:110px;
+}
+
+.jira {
+  min-height: 100px;
+  padding: 5px 0 5px 5px ;
+  border: 1px solid #D8D8D8;
+  border-radius: 3px;
+  margin: 5px;
+
+  font-size: 13px !important;
+  font-weight: normal;
+  cursor: move;
+}
+
+.jira .label {
+  font-size: 13px !important;
+}
+
+.jira:hover {
+  background-color: #f9f9f9;
+}

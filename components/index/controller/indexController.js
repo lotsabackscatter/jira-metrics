@@ -1,17 +1,3 @@
-angularModules.config(function ($stateProvider, $urlRouterProvider, routes) {
-
-  $urlRouterProvider.otherwise('/' + routes[0].url);
-
-  angular.forEach(routes, function(route){
-    $stateProvider
-      .state(route.name, {
-        url: '/' + route.url + '?play',
-        views: {
-          "searchPanel": {templateUrl: "partials/index/" + route.url}
-        }
-      })
-  });
-});
 angular.module('myApp')
     .controller('IndexCtrl', ['$scope', '$rootScope', '$filter', 'config', 'JIRA', 'Statistics', 'Jenkins', '$interval', '_', '$http', '$q', 'Fullscreen', IndexCtrl]);
 
@@ -201,12 +187,4 @@ function IndexCtrl($scope, $rootScope, $filter, config, JIRA, Statistics, Jenkin
           }
       }
   };
-
-  // Disable nvd3 resize events
-  // See https://github.com/krispo/angular-nvd3/issues/18
-  window.nv.charts = {};
-  window.nv.graphs = [];
-  window.nv.logs = {};
-  // remove resize listeners
-  window.onresize = null;
 }

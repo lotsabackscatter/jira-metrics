@@ -2,7 +2,7 @@
   img.img-rounded.pull-right(ng-src="{{issue.fields.assignee.avatarUrls['48x48']}}", title='{{issue.fields.assignee.displayName}}', style='margin: 7px; width: 35px;')
   img(ng-src='{{issue.fields.issueType.iconUrl}}', title='{{issue.fields.issueType.name}}', style='margin-right: 5px;')
   a(href='{{config.jiraHostName}}/browse/{{ issue.key }}', target='_blank') {{ issue.key }}
-  .pull-right.dim(style="margin-right:20px", title="{{issue.fields.updated | date:'medium'}}") Last updated {{issue.fields.updated | amTimeAgo}}
+  .dim.pull-right(style="margin-right:20px", title="{{issue.fields.updated | date:'medium'}}") Updated {{issue.fields.updated | amTimeAgo}}
   br
   img(ng-src='{{issue.fields.priority.iconUrl}}', title='{{issue.fields.priority.name}}', style='margin-right: 5px;')
   | {{ issue.fields.summary }}

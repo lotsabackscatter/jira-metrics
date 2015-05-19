@@ -13,7 +13,18 @@ function MasterCtrl($scope, $cookieStore, $rootScope, $location, $state, config,
     $scope.slideTimeInSecs = config.slideTimeInSecs;
     $scope.routes = routes;
 
+    function disableNVD3ResizeEvents() {
+        // See https://github.com/krispo/angular-nvd3/issues/18
+        window.nv.charts = {};
+        window.nv.graphs = [];
+        window.nv.logs = {};
+        // remove resize listeners
+        window.onresize = null;
+    }
+
     $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams) {
+        disableNVD3ResizeEvents();
+
         $scope.play = toParams.play === 'true';
         if($scope.play) {
             if(!$scope.slideshowPlaying) {

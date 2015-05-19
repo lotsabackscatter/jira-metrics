@@ -103,7 +103,8 @@ exports.search = function (req, res) {
     "maxResults": 250
   };
 
-  jiraPostRequest(res, hostname + '/rest/api/latest/search', data, HOUR_IN_MILLIS);
+  // Cache for 1 minute, so that the current sprint can update when changes are made
+  jiraPostRequest(res, hostname + '/rest/api/latest/search', data, 1 * MINUTE_IN_MILLIS);
 };
 
 exports.searchSimple = function (req, res) {
@@ -139,6 +140,21 @@ exports.unfinished = function (req, res) {
   };
 
   jiraPostRequest(res, hostname + '/rest/api/latest/search', data, DAY_IN_MILLIS);
+};
+
+exports.transition = function (req, res) {
+
+  var hostname = req.query.jiraHostName;
+  var key = req.query.key || req.params["key"];
+  var transitionId = req.query.transitionId;
+  console.log(req.query);
+  var data = {
+    "transition": { "id": transitionId }
+  };
+
+  var url = hostname + '/rest/api/latest/issue/' + key + '/transitions?expand=transitions.fields';
+  console.log('Running jira query: ' + url);
+  jiraPostRequest(res, hostname + '/rest/api/latest/issue/' + key + '/transitions?expand=transitions.fields', data, 1);
 };
 
 exports.issueDetail = function (req, res) {

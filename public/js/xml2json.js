@@ -25,20 +25,20 @@ function X2JS() {
 		CDATA_SECTION_NODE : 4,
 		DOCUMENT_NODE 	   : 9
 	};
-	
+
 	function getNodeLocalName( node ) {
-		var nodeLocalName = node.localName;			
-		if(nodeLocalName == null) // Yeah, this is IE!! 
+		var nodeLocalName = node.localName;
+		if(nodeLocalName == null) // Yeah, this is IE!!
 			nodeLocalName = node.baseName;
 		if(nodeLocalName == null || nodeLocalName=="") // =="" is IE too
 			nodeLocalName = node.nodeName;
 		return nodeLocalName;
 	}
-	
+
 	function getNodePrefix(node) {
 		return node.prefix;
 	}
-		
+
 	function escapeXmlChars(str) {
 		if(typeof(str) == "string")
 			return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#x27;').replace(/\//g, '&#x2F;');
@@ -48,12 +48,12 @@ function X2JS() {
 
 	function unescapeXmlChars(str) {
 		return str.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#x27;/g, "'").replace(/&#x2F;/g, '\/')
-	}	
+	}
 
 	function parseDOMChildren( node ) {
 		if(node.nodeType == DOMNodeTypes.DOCUMENT_NODE) {
 			var result = new Object;
-			var child = node.firstChild; 
+			var child = node.firstChild;
 			var childName = getNodeLocalName(child);
 			result[childName] = parseDOMChildren(child);
 			return result;
@@ -62,14 +62,14 @@ function X2JS() {
 		if(node.nodeType == DOMNodeTypes.ELEMENT_NODE) {
 			var result = new Object;
 			result.__cnt=0;
-			
+
 			var nodeChildren = node.childNodes;
-			
+
 			// Children nodes
 			for(var cidx=0; cidx <nodeChildren.length; cidx++) {
 				var child = nodeChildren.item(cidx); // nodeChildren[cidx];
 				var childName = getNodeLocalName(child);
-				
+
 				result.__cnt++;
 				if(result[childName] == null) {
 					result[childName] = parseDOMChildren(child);
@@ -82,34 +82,34 @@ function X2JS() {
 							var tmpObj = result[childName];
 							result[childName] = new Array();
 							result[childName][0] = tmpObj;
-							
+
 							result[childName+"_asArray"] = result[childName];
 						}
 					}
 					var aridx = 0;
 					while(result[childName][aridx]!=null) aridx++;
 					(result[childName])[aridx] = parseDOMChildren(child);
-				}			
+				}
 			}
-			
+
 			// Attributes
 			for(var aidx=0; aidx <node.attributes.length; aidx++) {
 				var attr = node.attributes.item(aidx); // [aidx];
 				result.__cnt++;
 				result["_"+attr.name]=attr.value;
 			}
-			
+
 			// Node namespace prefix
 			var nodePrefix = getNodePrefix(node);
 			if(nodePrefix!=null && nodePrefix!="") {
 				result.__cnt++;
 				result.__prefix=nodePrefix;
 			}
-			
+
 			if( result.__cnt == 1 && result["#text"]!=null  ) {
 				result = result["#text"];
-			} 
-			
+			}
+
 			if(result["#text"]!=null) {
 				result.__text = result["#text"];
 				if(escapeMode)
@@ -122,7 +122,7 @@ function X2JS() {
 				delete result["#cdata-section"];
 				delete result["#cdata-section_asArray"];
 			}
-			
+
 			if(result.__text!=null || result.__cdata!=null) {
 				result.toString = function() {
 					return (this.__text!=null? this.__text:'')+( this.__cdata!=null ? this.__cdata:'');
@@ -133,9 +133,9 @@ function X2JS() {
 		else
 		if(node.nodeType == DOMNodeTypes.TEXT_NODE || node.nodeType == DOMNodeTypes.CDATA_SECTION_NODE) {
 			return node.nodeValue;
-		}	
+		}
 	}
-	
+
 	function startTag(jsonObj, element, attrList, closed) {
 		var resultStr = "<"+ ( (jsonObj!=null && jsonObj.__prefix!=null)? (jsonObj.__prefix+":"):"") + element;
 		if(attrList!=null) {
@@ -151,36 +151,36 @@ function X2JS() {
 			resultStr+="/>";
 		return resultStr;
 	}
-	
+
 	function endTag(jsonObj,elementName) {
 		return "</"+ (jsonObj.__prefix!=null? (jsonObj.__prefix+":"):"")+elementName+">";
 	}
-	
+
 	function endsWith(str, suffix) {
 	    return str.indexOf(suffix, str.length - suffix.length) !== -1;
 	}
-	
+
 	function jsonXmlSpecialElem ( jsonObj, jsonObjField ) {
-		if(endsWith(jsonObjField.toString(),("_asArray")) 
-				|| jsonObjField.toString().indexOf("_")==0 
+		if(endsWith(jsonObjField.toString(),("_asArray"))
+				|| jsonObjField.toString().indexOf("_")==0
 				|| (jsonObj[jsonObjField] instanceof Function) )
 			return true;
 		else
 			return false;
 	}
-	
+
 	function jsonXmlElemCount ( jsonObj ) {
 		var elementsCnt = 0;
 		if(jsonObj instanceof Object ) {
 			for( var it in jsonObj  ) {
 				if(jsonXmlSpecialElem ( jsonObj, it) )
-					continue;			
+					continue;
 				elementsCnt++;
 			}
 		}
 		return elementsCnt;
 	}
-	
+
 	function parseJSONAttributes ( jsonObj ) {
 		var attrList = [];
 		if(jsonObj instanceof Object ) {
@@ -192,15 +192,15 @@ function X2JS() {
 		}
 		return attrList;
 	}
-	
+
 	function parseJSONTextAttrs ( jsonTxtObj ) {
 		var result ="";
-		
-		if(jsonTxtObj.__cdata!=null) {										
-			result+="<![CDATA["+jsonTxtObj.__cdata+"]]>";					
+
+		if(jsonTxtObj.__cdata!=null) {
+			result+="<![CDATA["+jsonTxtObj.__cdata+"]]>";
 		}
-		
-		if(jsonTxtObj.__text!=null) {			
+
+		if(jsonTxtObj.__text!=null) {
 			if(escapeMode)
 				result+=escapeXmlChars(jsonTxtObj.__text);
 			else
@@ -208,7 +208,7 @@ function X2JS() {
 		}
 		return result
 	}
-	
+
 	function parseJSONTextObject ( jsonTxtObj ) {
 		var result ="";
 
@@ -222,12 +222,12 @@ function X2JS() {
 				else
 					result+=jsonTxtObj;
 			}
-		
+
 		return result;
 	}
-	
+
 	function parseJSONArray ( jsonArrRoot, jsonArrObj, attrList ) {
-		var result = ""; 
+		var result = "";
 		if(jsonArrRoot.length == 0) {
 			result+=startTag(jsonArrRoot, jsonArrObj, attrList, true);
 		}
@@ -235,35 +235,35 @@ function X2JS() {
 			for(var arIdx = 0; arIdx < jsonArrRoot.length; arIdx++) {
 				result+=startTag(jsonArrRoot[arIdx], jsonArrObj, parseJSONAttributes(jsonArrRoot[arIdx]), false);
 				result+=parseJSONObject(jsonArrRoot[arIdx]);
-				result+=endTag(jsonArrRoot[arIdx],jsonArrObj);						
+				result+=endTag(jsonArrRoot[arIdx],jsonArrObj);
 			}
 		}
 		return result;
 	}
-	
+
 	function parseJSONObject ( jsonObj ) {
-		var result = "";	
+		var result = "";
 
 		var elementsCnt = jsonXmlElemCount ( jsonObj );
-		
+
 		if(elementsCnt > 0) {
 			for( var it in jsonObj ) {
-				
+
 				if(jsonXmlSpecialElem ( jsonObj, it) )
-					continue;			
-				
-				var subObj = jsonObj[it];						
-				
+					continue;
+
+				var subObj = jsonObj[it];
+
 				var attrList = parseJSONAttributes( subObj )
-				
+
 				if(subObj == null || subObj == undefined) {
 					result+=startTag(subObj, it, attrList, true)
 				}
 				else
 				if(subObj instanceof Object) {
-					
-					if(subObj instanceof Array) {					
-						result+=parseJSONArray( subObj, it, attrList )					
+
+					if(subObj instanceof Array) {
+						result+=parseJSONArray( subObj, it, attrList )
 					}
 					else {
 						var subObjElementsCnt = jsonXmlElemCount ( subObj );
@@ -285,14 +285,14 @@ function X2JS() {
 			}
 		}
 		result+=parseJSONTextObject(jsonObj);
-		
+
 		return result;
 	}
-	
+
 	this.parseXmlString = function(xmlDocStr) {
 		var xmlDoc;
 		if (window.DOMParser) {
-			var parser=new window.DOMParser();			
+			var parser=new window.DOMParser();
 			xmlDoc = parser.parseFromString( xmlDocStr, "text/xml" );
 		}
 		else {
@@ -310,9 +310,9 @@ function X2JS() {
 	this.xml2json = function (xmlDoc) {
 		return parseDOMChildren ( xmlDoc );
 	}
-	
+
 	this.xml_str2json = function (xmlDocStr) {
-		var xmlDoc = this.parseXmlString(xmlDocStr);	
+		var xmlDoc = this.parseXmlString(xmlDocStr);
 		return this.xml2json(xmlDoc);
 	}
 
@@ -324,11 +324,11 @@ function X2JS() {
 		var xmlDocStr = this.json2xml_str (jsonObj);
 		return this.parseXmlString(xmlDocStr);
 	}
-	
+
 	this.getVersion = function () {
 		return VERSION;
-	}		
-	
+	}
+
 	this.escapeMode = function(enabled) {
 		escapeMode = enabled;
 	}

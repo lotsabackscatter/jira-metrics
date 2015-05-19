@@ -82,5 +82,13 @@ appServices.factory('JIRA', function ($resource, config) {
                                     cache: true
                                 }
                          }),
+        transition: $resource('api/transition/:key', {
+                              jiraHostName: config.jiraHostName
+                          },
+                          {
+                            save : {
+                                    method : 'POST',
+                                }
+                         }),
     };
 });

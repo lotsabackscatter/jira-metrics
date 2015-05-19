@@ -6,3 +6,4 @@ scripts/
 libpeerconnection.log
 build.xml
 LICENSE
+jira-metrics.log

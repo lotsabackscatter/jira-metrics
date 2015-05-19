@@ -2,6 +2,5 @@
   .col-md-12
     rd-widget
       rd-widget-header(icon="fa-clock-o", title="Current Sprint")
-        {{jiras.issues.length}} issues
       rd-widget-body.medium.no-padding
         agileboard(component="'Resource'", jiras="$parent.jiras")
