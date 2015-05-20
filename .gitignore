@@ -4,3 +4,4 @@ node_modules/
 .env
 public/img/avatars/
 public/img/performance/
+jira-metrics.log
