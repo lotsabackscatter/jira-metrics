@@ -1,8 +1,9 @@
 .row
-  img.img-rounded.pull-right(ng-src="{{issue.fields.assignee.avatarUrls['48x48']}}", title='{{issue.fields.assignee.displayName}}', style='margin: 7px; width: 35px;')
+  img.img-rounded.pull-right(ng-src="{{issue.fields.assignee.avatarUrls['48x48']}}", fallback-src="img/avatars/48x48/default.png", title='{{issue.fields.assignee.displayName}}', style='margin: 7px; width: 35px;')
   img(ng-src='{{issue.fields.issueType.iconUrl}}', title='{{issue.fields.issueType.name}}', style='margin-right: 5px;')
   a(href='{{config.jiraHostName}}/browse/{{ issue.key }}', target='_blank') {{ issue.key }}
   .dim.pull-right(style="margin-right:20px", title="{{issue.fields.updated | date:'medium'}}") Updated {{issue.fields.updated | amTimeAgo}}
+  .label.label-primary.pull-right(ng-show="issue.fields.fixVersions", ng-repeat='version in issue.fields.fixVersions', title='Fix Version: {{version.name}}', style="font-weight: normal; margin-right: 15px;") {{version.name}}
   br
   img(ng-src='{{issue.fields.priority.iconUrl}}', title='{{issue.fields.priority.name}}', style='margin-right: 5px;')
   | {{ issue.fields.summary }}
